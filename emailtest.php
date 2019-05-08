@@ -1,4 +1,5 @@
 <?php
+require("./sendgrid-php/sendgrid-php.php");
 $subject = 'subject';
 $message = 'message';
 $to = 'luisv555@gmail.com';
@@ -6,20 +7,17 @@ $mail ='lvalencia@csumb.edu';
 $type = 'plain'; // or HTML
 $charset = 'utf-8';
 
-$mail     = 'no-reply@'.str_replace('www.', '', $_SERVER['SERVER_NAME']);
-$uniqid   = md5(uniqid(time()));
-$headers  = 'From: '.$mail."\n";
-$headers .= 'Reply-to: '.$mail."\n";
-$headers .= 'Return-Path: '.$mail."\n";
-//$headers .= 'Message-ID: <'.$uniqid.'@'.$_SERVER['SERVER_NAME'].">\n";
-$headers .= 'MIME-Version: 1.0'."\n";
-$headers .= 'Date: '.gmdate('D, d M Y H:i:s', time())."\n";
-$headers .= 'X-Priority: 3'."\n";
-$headers .= 'X-MSMail-Priority: Normal'."\n";
-$headers .= 'Content-Type: multipart/mixed;boundary="----------'.$uniqid.'"'."\n";
-//$headers .= '------------'.$uniqid."\n";
-$headers .= 'Content-type: text/'.$type.';charset='.$charset.''."\n";
-$headers .= 'Content-transfer-encoding: 7bit';
+$from = new SendGrid\Email(null, $mail);
+$subject = "Hello World from the SendGrid PHP Library!";
+$to = new SendGrid\Email(null, "asantos@csumb.edu");
+$content = new SendGrid\Content("text/plain", "Hello, Email!");
+$mail = new SendGrid\Mail($from, $subject, $to, $content);
 
-mail($to, $subject, $message, $headers);
+$apiKey = getenv('SENDGRID_API_KEY');
+$sg = new \SendGrid($apiKey);
+
+$response = $sg->client->mail()->send()->post($mail);
+echo $response->statusCode();
+echo $response->headers();
+echo $response->body();
 ?>
