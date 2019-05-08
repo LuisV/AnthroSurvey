@@ -9,7 +9,7 @@ $charset = 'utf-8';
 
 $from = new SendGrid\Email(null, $mail);
 $subject = "Hello World from the SendGrid PHP Library!";
-$to = new SendGrid\Email(null, "asantos@csumb.edu");
+$to = new SendGrid\Email(null, $to);
 $content = new SendGrid\Content("text/plain", "Hello, Email!");
 $mail = new SendGrid\Mail($from, $subject, $to, $content);
 
